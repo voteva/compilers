@@ -16,25 +16,24 @@ import java.util.stream.Collectors;
 
 public class DfaCreator {
 
-    public static Automata<DfaState> create(Automata<State> nfa) {
+    public static Automata<State> create(Automata<State> nfa) {
         int stateNum = 0;
         Queue<DfaState> statesQueue = new LinkedList<>();
         LinkedList<DfaState> newStates = new LinkedList<>();
+        List<State> newStartStates = new LinkedList<>();
 
         if (CollectionUtils.isEmpty(nfa.getStates())) {
-            return new Automata<>(newStates);
+            return new Automata<>();
         }
 
         removeEpsilonTransitions(nfa);
 
-        Set<State> innerStatesFirst = new HashSet<>();
-        innerStatesFirst.add(nfa.getStates().getFirst());
+        DfaState newStartState = new DfaState(stateNum++, new HashSet<>(nfa.getStartStates()));
+        newStartState.setFinalState(containsFinalState(newStartState.getInnerStates()));
 
-        DfaState firstState = new DfaState(stateNum++, innerStatesFirst);
-        firstState.setFinalState(containsFinalState(firstState.getInnerStates()));
-
-        statesQueue.add(firstState);
-        newStates.add(firstState);
+        statesQueue.add(newStartState);
+        newStates.add(newStartState);
+        newStartStates.add(newStartState);
 
         Set<Character> allLiteralTokens = getAllLiteralTokens(nfa);
 
@@ -71,7 +70,11 @@ public class DfaCreator {
             }
         }
 
-        return new Automata<>(newStates);
+        return new Automata<>(
+                newStates.stream()
+                        .map(s -> (State) s)
+                        .collect(Collectors.toCollection(LinkedList::new)),
+                newStartStates);
     }
 
     private static boolean containsFinalState(Set<State> states) {

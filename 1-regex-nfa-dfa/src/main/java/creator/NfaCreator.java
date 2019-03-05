@@ -5,6 +5,7 @@ import fa.state.State;
 import util.RegexUtils;
 import util.TokenUtils;
 
+import java.util.Collections;
 import java.util.Stack;
 
 public class NfaCreator {
@@ -52,6 +53,7 @@ public class NfaCreator {
         if (!nfaMembersStack.isEmpty()) {
             completeNfa = nfaMembersStack.pop();
             completeNfa.getStates().getLast().setFinalState(true);
+            completeNfa.setStartStates(Collections.singletonList(completeNfa.getStates().getFirst()));
         }
 
         return completeNfa;
