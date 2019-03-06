@@ -17,16 +17,15 @@ import java.util.stream.Collectors;
 public class DfaCreator {
 
     public static Automata<State> create(Automata<State> nfa) {
+        if (CollectionUtils.isEmpty(nfa.getStates())) {
+            return new Automata<>();
+        }
+        removeEpsilonTransitions(nfa);
+
         int stateNum = 0;
         Queue<DfaState> statesQueue = new LinkedList<>();
         LinkedList<DfaState> newStates = new LinkedList<>();
         List<State> newStartStates = new LinkedList<>();
-
-        if (CollectionUtils.isEmpty(nfa.getStates())) {
-            return new Automata<>();
-        }
-
-        removeEpsilonTransitions(nfa);
 
         DfaState newStartState = new DfaState(stateNum++, new HashSet<>(nfa.getStartStates()));
         newStartState.setFinalState(containsFinalState(newStartState.getInnerStates()));
@@ -47,26 +46,30 @@ public class DfaCreator {
                         .flatMap(List::stream)
                         .collect(Collectors.toSet());
 
-                if (!CollectionUtils.isEmpty(achievableStates)) {
-                    DfaState existingState = null;
-                    for (DfaState s : newStates) {
-                        if (s.getInnerStates().containsAll(achievableStates)
-                                && achievableStates.containsAll(s.getInnerStates())) {
-                            existingState = s;
-                        }
-                    }
+                if (CollectionUtils.isEmpty(achievableStates)) {
+                    continue;
+                }
 
-                    if (existingState != null) {
-                        currentState.addTransition(token, existingState);
-                    } else {
-                        DfaState newState = new DfaState(stateNum++, achievableStates);
-                        newState.setFinalState(containsFinalState(achievableStates));
-
-                        currentState.addTransition(token, newState);
-                        statesQueue.add(newState);
-                        newStates.add(newState);
+                boolean isPresent = false;
+                for (DfaState s : newStates) {
+                    if (s.getInnerStates().containsAll(achievableStates)
+                            && achievableStates.containsAll(s.getInnerStates())) {
+                        isPresent = true;
+                        currentState.addTransition(token, s);
+                        break;
                     }
                 }
+
+                if (isPresent) {
+                    continue;
+                }
+
+                DfaState newState = new DfaState(stateNum++, achievableStates);
+                newState.setFinalState(containsFinalState(achievableStates));
+
+                currentState.addTransition(token, newState);
+                statesQueue.add(newState);
+                newStates.add(newState);
             }
         }
 

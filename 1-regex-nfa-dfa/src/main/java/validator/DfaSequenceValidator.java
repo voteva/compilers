@@ -13,21 +13,21 @@ public class DfaSequenceValidator {
             return inputString.isEmpty();
         }
 
-        State state = dfa.getStartStates().get(0);
+        State currentState = dfa.getStartStates().get(0);
         if (inputString.isEmpty()) {
-            // if the first is state is final state, so empty string is valid
-            return state.isFinalState();
+            // if the first state is final then empty string is valid
+            return currentState.isFinalState();
         }
 
         for (int i = 0; i < inputString.length(); i++) {
-            List<State> transitionsForToken = state.getTransitions(inputString.charAt(i));
+            List<State> transitionsForToken = currentState.getTransitions(inputString.charAt(i));
             if (CollectionUtils.isEmpty(transitionsForToken)) {
                 return false;
             }
 
-            state = transitionsForToken.get(0);
+            currentState = transitionsForToken.get(0);
         }
 
-        return state.isFinalState();
+        return currentState.isFinalState();
     }
 }
