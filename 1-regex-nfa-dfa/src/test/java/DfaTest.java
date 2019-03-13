@@ -375,4 +375,22 @@ public class DfaTest {
             assertFalse(DfaSequenceValidator.validate(fa, "abcdef"));
         }
     }
+
+    @Test
+    public void testSequence11() {
+        Automata<State> nfa = new NfaCreator().create("(a|b)*abb");
+        Automata<State> dfa = DfaCreator.create(nfa);
+        Automata<State> minDfa = MinDfaCreator.create(dfa);
+
+        List<Automata<State>> dfas = Arrays.asList(dfa, minDfa);
+
+        for (Automata<State> fa : dfas) {
+            assertTrue(DfaSequenceValidator.validate(fa, "aabb"));
+            assertTrue(DfaSequenceValidator.validate(fa, "abb"));
+            assertTrue(DfaSequenceValidator.validate(fa, "babb"));
+            assertTrue(DfaSequenceValidator.validate(fa, "abbabb"));
+
+            assertFalse(DfaSequenceValidator.validate(fa, ""));
+        }
+    }
 }

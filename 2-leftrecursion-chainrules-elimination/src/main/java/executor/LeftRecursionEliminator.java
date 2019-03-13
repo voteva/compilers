@@ -5,9 +5,9 @@ import model.Grammar;
 import model.Nonterm;
 import model.Production;
 import model.Symbol;
+import util.ProductionMapCreator;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -17,20 +17,9 @@ public class LeftRecursionEliminator {
 
     public static Grammar eliminate(Grammar grammar) {
         EpsilonTransitionsEliminator.eliminate(grammar);
-        CyclesEliminator.eliminate(grammar);
+        ChainRulesEliminator.eliminate(grammar);
 
-        Map<Nonterm, List<List<Symbol>>> prodMap = new HashMap<>();
-        for (Production production : grammar.getProductions()) {
-            List<List<Symbol>> prods;
-            if (!prodMap.containsKey(production.getLeftPart())) {
-                prods = new LinkedList<>();
-            } else {
-                prods = prodMap.get(production.getLeftPart());
-            }
-
-            prods.add(production.getRightPart());
-            prodMap.put(production.getLeftPart(), prods);
-        }
+        Map<Nonterm, List<List<Symbol>>> prodMap = ProductionMapCreator.create(grammar.getProductions());
 
         List<Production> newProductions = new LinkedList<>();
         for (Nonterm prodMapKey : prodMap.keySet()) {
@@ -47,6 +36,7 @@ public class LeftRecursionEliminator {
             }
 
             Nonterm newNonterm = new Nonterm(prodMapKey.getName() + "'");
+            grammar.getNonterminalSymbols().add(newNonterm);
 
             for (List<Symbol> nonrecursiveRule : nonrecursiveRules) {
                 nonrecursiveRule.add(nonrecursiveRule.size(), newNonterm);

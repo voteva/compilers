@@ -4,10 +4,6 @@
     "terminalsymbols": {
       "term": [
         {
-          "-name": "EPSILON",
-          "-spell": "ϵ"
-        },
-        {
           "-name": "IDENT",
           "-spell": "a"
         }

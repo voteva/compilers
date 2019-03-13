@@ -30,7 +30,6 @@ public class EpsilonTransitionsEliminator {
         for (Production production : notEpsilonProductions) {
             for (Production epsilonProduction : epsilonProductions) {
                 if (production.getRightPart().contains(epsilonProduction.getLeftPart())) {
-                    // TODO for each occurrence
                     List<Symbol> newRightPart = new LinkedList<>(production.getRightPart());
                     newRightPart.remove(epsilonProduction.getLeftPart());
                     newProductions.add(
