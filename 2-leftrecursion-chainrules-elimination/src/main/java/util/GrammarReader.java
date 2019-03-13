@@ -1,6 +1,7 @@
 package util;
 
 import com.jayway.jsonpath.JsonPath;
+import model.Epsilon;
 import model.Grammar;
 import model.Nonterm;
 import model.Production;
@@ -11,6 +12,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -46,15 +48,18 @@ public class GrammarReader {
         }
     }
 
-    private static List<Term> parseTerminalSymbols(String contentString) {
+    private static Map<String, String> parseTerminalSymbols(String contentString) {
         List<Map<String, Object>> terms = JsonPath.parse(contentString)
                 .read("$.grammar.terminalsymbols.term");
 
-        return terms.stream()
-                .map(s -> new Term(
-                        s.get("-name").toString(),
-                        s.get("-spell").toString()))
-                .collect(Collectors.toList());
+        Map<String, String> terminals = new HashMap<>();
+        terms.forEach(s -> terminals.put(
+                s.get("-name").toString(),
+                s.get("-spell").toString()));
+
+        terminals.put(Epsilon.getInstance().getName(), ((Term) Epsilon.getInstance()).getSpell());
+
+        return terminals;
     }
 
     private static List<Nonterm> parseNonterminalSymbols(String contentString) {
@@ -85,9 +90,13 @@ public class GrammarReader {
         List<Map<String, Object>> symbols = JsonPath.parse(content).read("$.rhs.symbol");
 
         return symbols.stream()
-                .map(s -> new Symbol(
-                        s.get("-type").toString(),
-                        s.get("-name").toString()))
+                .map(s -> {
+                    if ("term".equals(s.get("-type").toString())) {
+                        return new Term(s.get("-name").toString());
+                    } else {
+                        return new Nonterm(s.get("-name").toString());
+                    }
+                })
                 .collect(Collectors.toList());
     }
 

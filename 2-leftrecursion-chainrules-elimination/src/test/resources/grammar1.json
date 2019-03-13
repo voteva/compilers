@@ -115,7 +115,7 @@
           "rhs": {
             "symbol": [
               {
-                "-type": "nonterm",
+                "-type": "term",
                 "-name": "IDENT"
               }
             ]

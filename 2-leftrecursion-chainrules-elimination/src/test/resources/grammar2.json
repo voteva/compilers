@@ -1,0 +1,106 @@
+{
+  "grammar": {
+    "-name": "G2",
+    "terminalsymbols": {
+      "term": [
+        {
+          "-name": "EPSILON",
+          "-spell": "ϵ"
+        },
+        {
+          "-name": "IDENT",
+          "-spell": "a"
+        }
+      ]
+    },
+    "nonterminalsymbols": {
+      "nonterm": [
+        {
+          "-name": "A"
+        },
+        {
+          "-name": "B"
+        },
+        {
+          "-name": "C"
+        }
+      ]
+    },
+    "productions": {
+      "production": [
+        {
+          "lhs": {
+            "-name": "A"
+          },
+          "rhs": {
+            "symbol": [
+              {
+                "-type": "nonterm",
+                "-name": "B"
+              }
+            ]
+          }
+        },
+        {
+          "lhs": {
+            "-name": "A"
+          },
+          "rhs": {
+            "symbol": [
+              {
+                "-type": "term",
+                "-name": "EPSILON"
+              }
+            ]
+          }
+        },
+        {
+          "lhs": {
+            "-name": "B"
+          },
+          "rhs": {
+            "symbol": [
+              {
+                "-type": "nonterm",
+                "-name": "B"
+              },
+              {
+                "-type": "nonterm",
+                "-name": "C"
+              }
+            ]
+          }
+        },
+        {
+          "lhs": {
+            "-name": "C"
+          },
+          "rhs": {
+            "symbol": [
+              {
+                "-type": "term",
+                "-name": "IDENT"
+              }
+            ]
+          }
+        },
+        {
+          "lhs": {
+            "-name": "C"
+          },
+          "rhs": {
+            "symbol": [
+              {
+                "-type": "term",
+                "-name": "EPSILON"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "startsymbol": {
+      "-name": "A"
+    }
+  }
+}
