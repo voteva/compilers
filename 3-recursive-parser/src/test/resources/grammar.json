@@ -1,0 +1,258 @@
+{
+  "grammar": {
+    "-name": "G4",
+    "terminalsymbols": {
+      "term": [
+        {
+          "-name": "NOT",
+          "-spell": "!"
+        },
+        {
+          "-name": "AND",
+          "-spell": "&"
+        },
+        {
+          "-name": "TILDE",
+          "-spell": "~"
+        },
+        {
+          "-name": "TRUE",
+          "-spell": "true"
+        },
+        {
+          "-name": "FALSE",
+          "-spell": "false"
+        },
+        {
+          "-name": "A",
+          "-spell": "a"
+        },
+        {
+          "-name": "B",
+          "-spell": "b"
+        }
+      ]
+    },
+    "nonterminalsymbols": {
+      "nonterm": [
+        {
+          "-name": "E"
+        },
+        {
+          "-name": "LE"
+        },
+        {
+          "-name": "LM"
+        },
+        {
+          "-name": "SLE"
+        },
+        {
+          "-name": "PLE"
+        },
+        {
+          "-name": "LV"
+        },
+        {
+          "-name": "IDENT"
+        }
+      ]
+    },
+    "productions": {
+      "production": [
+        {
+          "lhs": {
+            "-name": "E"
+          },
+          "rhs": {
+            "symbol": [
+              {
+                "-type": "nonterm",
+                "-name": "LE"
+              }
+            ]
+          }
+        },
+        {
+          "lhs": {
+            "-name": "LE"
+          },
+          "rhs": {
+            "symbol": [
+              {
+                "-type": "nonterm",
+                "-name": "LM"
+              }
+            ]
+          }
+        },
+        {
+          "lhs": {
+            "-name": "LE"
+          },
+          "rhs": {
+            "symbol": [
+              {
+                "-type": "nonterm",
+                "-name": "LE"
+              },
+              {
+                "-type": "term",
+                "-name": "NOT"
+              },
+              {
+                "-type": "nonterm",
+                "-name": "LM"
+              }
+            ]
+          }
+        },
+        {
+          "lhs": {
+            "-name": "LM"
+          },
+          "rhs": {
+            "symbol": [
+              {
+                "-type": "nonterm",
+                "-name": "SLE"
+              }
+            ]
+          }
+        },
+        {
+          "lhs": {
+            "-name": "LM"
+          },
+          "rhs": {
+            "symbol": [
+              {
+                "-type": "nonterm",
+                "-name": "LM"
+              },
+              {
+                "-type": "term",
+                "-name": "AND"
+              },
+              {
+                "-type": "nonterm",
+                "-name": "SLE"
+              }
+            ]
+          }
+        },
+        {
+          "lhs": {
+            "-name": "SLE"
+          },
+          "rhs": {
+            "symbol": [
+              {
+                "-type": "nonterm",
+                "-name": "PLE"
+              }
+            ]
+          }
+        },
+        {
+          "lhs": {
+            "-name": "SLE"
+          },
+          "rhs": {
+            "symbol": [
+              {
+                "-type": "term",
+                "-name": "TILDE"
+              },
+              {
+                "-type": "nonterm",
+                "-name": "PLE"
+              }
+            ]
+          }
+        },
+        {
+          "lhs": {
+            "-name": "PLE"
+          },
+          "rhs": {
+            "symbol": [
+              {
+                "-type": "nonterm",
+                "-name": "LV"
+              }
+            ]
+          }
+        },
+        {
+          "lhs": {
+            "-name": "PLE"
+          },
+          "rhs": {
+            "symbol": [
+              {
+                "-type": "nonterm",
+                "-name": "IDENT"
+              }
+            ]
+          }
+        },
+        {
+          "lhs": {
+            "-name": "LV"
+          },
+          "rhs": {
+            "symbol": [
+              {
+                "-type": "term",
+                "-name": "TRUE"
+              }
+            ]
+          }
+        },
+        {
+          "lhs": {
+            "-name": "LV"
+          },
+          "rhs": {
+            "symbol": [
+              {
+                "-type": "term",
+                "-name": "FALSE"
+              }
+            ]
+          }
+        },
+        {
+          "lhs": {
+            "-name": "IDENT"
+          },
+          "rhs": {
+            "symbol": [
+              {
+                "-type": "term",
+                "-name": "A"
+              }
+            ]
+          }
+        },
+        {
+          "lhs": {
+            "-name": "IDENT"
+          },
+          "rhs": {
+            "symbol": [
+              {
+                "-type": "term",
+                "-name": "B"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "startsymbol": {
+      "-name": "E"
+    }
+  }
+}
