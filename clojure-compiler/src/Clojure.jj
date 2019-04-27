@@ -1,0 +1,116 @@
+options {
+  LOOKAHEAD = 2;
+  UNICODE_INPUT = true;
+}
+
+PARSER_BEGIN(ClojureParser)
+
+package parser;
+
+public class ClojureParser {
+
+    public static void main(String[] args) {
+        try {
+            new ClojureParser(new java.io.InputStreamReader(System.in)).S();
+            System.out.println("Syntax is okay");
+        } catch (Throwable e) {
+            System.out.println("Syntax check failed: " + e.getMessage());
+        }
+    }
+}
+
+PARSER_END(ClojureParser)
+
+
+
+/* COMMENTS */
+
+SPECIAL_TOKEN: { <SINGLE_LINE_COMMENT: ";" (~["\n","\r"])* ("\n"|"\r"|"\r\n")> }
+
+SKIP: { " " | "\t" | "\n" | "\r" | "," }
+
+/* BRACKETS */
+
+TOKEN: {
+  // <BRACKET: <LPAR> | <RPAR> | <LSQU> | <RSQU> | <LCUR> | <RCUR> >
+  <LPAR: "(">
+  | <RPAR: ")">
+  | <LSQU: "[">
+  | <RSQU: "]">
+  | <LCUR: "{">
+  | <RCUR: "}">
+  }
+
+
+/* LITERALS */
+TOKEN: {
+  <NUM: <RATIO> | <INT> | <DOUBLE> >
+  | <RATIO: <INT> "/" <INT> >
+  | <DOUBLE: (<DIGIT>)+ "." (<DIGIT>)* ("e" (<DIGIT>)+)? >
+  | <INT: (<DIGIT>)+ ("r" (<DIGIT>)+)? ("n" | "l" | "L" | "N")?>
+  | <NIL: "nil">
+  | <STR: "\"" (~["\""] | "\\" "\"")* "\"">
+  | <BOOLEAN: "true" | "false">
+  | <CHARACTER: "\\" (~[" "]
+                     | ("u" <DIGIT><DIGIT><DIGIT><DIGIT>)
+                     | ("o" <DIGIT><DIGIT><DIGIT>)
+                     | "newline"
+                     | "space"
+                     | "tab"
+                     | "formfeed"
+                     | "backspace"
+                     | "return") >
+  | <KEYWORD: ":" (":")? ((<DIGIT>)* <NS> "/")? (<DIGIT>)* <NAME> >
+}
+
+TOKEN: {
+  <SYMBOL: <NAME> | <NS> | <NS> "/" <NAME> | <INTEROP> >
+  | <INTEROP: (("." | ".-") <NAME> | "." )>
+  | <NS: <NAME> ("." <NAME>)*>
+  | <NAME: (<LETTER> | <CHAR>) (<DIGIT> | <LETTER> | <CHAR> | "#" | "'" )* >
+  | <LETTER: ["a"-"z", "A"-"Z"]>
+  | <CHAR: ["*", "+", "!", "-", "_", "?", "=", "%", "&", ">", "<", "$"] > // maybe some other chars
+  | <DIGIT: ["0"-"9"]>
+}
+
+void S(): {} { forms() <EOF> }
+
+void forms(): {} {
+  (form())*
+}
+void form(): {} {
+  literal()
+  | symbol()
+  | list()
+  | vector()
+  | set()
+  | map()
+  | reader_macro()
+}
+
+void list(): {} {
+  <LPAR> forms() <RPAR>
+}
+
+void vector(): {} { <LSQU> forms() <RSQU> }
+void set(): {} { "#" <LCUR> forms() <RCUR> }
+void map(): {} { <LCUR> (form() form())* <RCUR> }
+
+void symbol(): {} { <SYMBOL> }
+void literal(): {} { <KEYWORD> | <CHARACTER> | <NUM> | <NIL> | <STR> | <BOOLEAN> }
+
+
+/* READER MACROS */
+
+void reader_macro(): {} { quote() | lambda() | regex() | var_quote() | discard() | tag() | meta()}
+void quote(): {} { ("\'" | "`" | "~" | "~@" | "@" ) form() }
+void lambda(): {} { "#(" forms() ")" }
+void regex(): {} { "#" <STR> }
+void var_quote(): {} { "#\'" symbol() }
+void discard(): {} { "#_" form() }
+void tag(): {} { "^" form() form() }
+void meta(): {} {"#^" (map() form() | form()) }
+
+
+// void deref(): {} { "@" form() }
+// void dispatch(): {} { "#" symbol() form() }
