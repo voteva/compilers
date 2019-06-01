@@ -1,7 +1,7 @@
 package operators;
 
 import parser.Parser;
-import parser.SyntaxError;
+import exception.SyntaxException;
 import parser.Token;
 
 public abstract class Prefix<N> extends Operator<N> {
@@ -16,7 +16,7 @@ public abstract class Prefix<N> extends Operator<N> {
     public abstract N makePrefixNode(N operand);
 
     @Override
-    public N parse(Token<N> token) throws SyntaxError {
+    public N parse(Token<N> token) throws SyntaxException {
         return makePrefixNode(parser.expression(pbp));
     }
 

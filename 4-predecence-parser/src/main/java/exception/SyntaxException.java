@@ -1,11 +1,13 @@
-package parser;
+package exception;
+
+import parser.Location;
 
 @SuppressWarnings("serial")
-public class SyntaxError extends Exception {
+public class SyntaxException extends Exception {
 
     private final Location loc;
 
-    public SyntaxError(String msg, Location loc) {
+    public SyntaxException(String msg, Location loc) {
         super(msg);
         this.loc = loc;
     }

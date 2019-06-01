@@ -1,16 +1,9 @@
 package operators;
 
 import parser.Parser;
-import parser.SyntaxError;
+import exception.SyntaxException;
 import parser.Token;
 
-
-/**
- * Outfix operators, e.g., parentheses, brackets, ...
- *
- * @param <N>
- * @author jure
- */
 public class Outfix<N> extends Operator<N> {
 
     protected OutfixClose tokClose;
@@ -25,7 +18,7 @@ public class Outfix<N> extends Operator<N> {
     }
 
     @Override
-    public N parse(Token<N> token) throws SyntaxError {
+    public N parse(Token<N> token) throws SyntaxException {
         // check if open token is immediately followed by close token
         N tree = parser.peek(tokClose) ? null : parser.expression(0);
         // advance newline

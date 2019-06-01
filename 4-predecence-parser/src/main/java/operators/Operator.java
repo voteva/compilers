@@ -1,14 +1,8 @@
 package operators;
 
+import exception.SyntaxException;
 import parser.*;
 
-
-/**
- * Base class for operators: punctuation or keyword.
- *
- * @param <N>
- * @author jure
- */
 public class Operator<N> extends Tokind<N> {
 
 	private boolean isPunctuation;
@@ -35,7 +29,7 @@ public class Operator<N> extends Tokind<N> {
 	}
 
 	@Override
-	public Token<N> lex() throws SyntaxError {
+	public Token<N> lex() throws SyntaxException {
 		Location lexloc = input.mark();
 		if (input.advanceIf(name) && (isPunctuation || !Character.isLetterOrDigit(input.peek())))
 			return new Token<N>(this, lexloc);

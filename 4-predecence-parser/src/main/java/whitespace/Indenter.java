@@ -1,5 +1,6 @@
 package whitespace;
 
+import exception.SyntaxException;
 import operators.Operator;
 import parser.*;
 
@@ -30,7 +31,7 @@ public class Indenter<N> extends Tokind<N> {
         return indents.size();
     }
 
-    void checkIndentation() throws SyntaxError {
+    void checkIndentation() throws SyntaxException {
         // count dedentations
         while (input.getCol() < indents.peek()) {
             indents.pop();
@@ -38,11 +39,11 @@ public class Indenter<N> extends Tokind<N> {
         }
         // check indentation level
         if (input.getCol() != indents.peek())
-            throw new SyntaxError("invalid indentation level", input.getLoc());
+            throw new SyntaxException("invalid indentation level", input.getLoc());
     }
 
     @Override
-    public Token<N> lex() throws SyntaxError {
+    public Token<N> lex() throws SyntaxException {
         // generate any Dedent
         if (dedentCount > 0) {
             dedentCount--;

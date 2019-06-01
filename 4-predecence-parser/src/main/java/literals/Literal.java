@@ -1,7 +1,7 @@
 package literals;
 
 import parser.Parser;
-import parser.SyntaxError;
+import exception.SyntaxException;
 import parser.Token;
 import parser.Tokind;
 
@@ -14,7 +14,7 @@ public abstract class Literal<N> extends Tokind<N> {
     public abstract N makeNode(String lexeme);
 
     @Override
-    public N parse(Token<N> token) throws SyntaxError {
+    public N parse(Token<N> token) throws SyntaxException {
         return token.getValue();
     }
 

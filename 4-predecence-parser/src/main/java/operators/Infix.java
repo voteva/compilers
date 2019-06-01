@@ -1,7 +1,7 @@
 package operators;
 
 import parser.Parser;
-import parser.SyntaxError;
+import exception.SyntaxException;
 import parser.Token;
 
 public abstract class Infix<N> extends Operator<N> {
@@ -20,7 +20,7 @@ public abstract class Infix<N> extends Operator<N> {
     public abstract N makeInfixNode(N left, N right);
 
     @Override
-    public N parse(Token<N> token, N left) throws SyntaxError {
+    public N parse(Token<N> token, N left) throws SyntaxException {
         N right = parser.expression(rightAssoc ? lbp - 1 : lbp);
         return makeInfixNode(left, right);
     }

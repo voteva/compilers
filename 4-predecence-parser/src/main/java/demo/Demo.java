@@ -1,32 +1,34 @@
 package demo;
 
-import parser.SyntaxError;
+import exception.SemanticException;
+import exception.SyntaxException;
 
-public class Kalq2repl {
+public class Demo {
 
     public static void main(String[] args) {
-        Parser2 parser = new Parser2(new Engine());
+        DemoParser parser = new DemoParser(new Engine());
+
         while (parser.ready()) {
+            // build tree
             Engine.Node tree;
             try {
                 tree = parser.parse();
                 if (tree == null) continue;
-            } catch (SyntaxError e) {
+            } catch (SyntaxException e) {
                 System.err.println(e);
                 continue;
             }
             System.out.println("Tree: " + tree);
+
             // evaluate tree
             Engine.Node result;
             try {
                 result = tree.eval();
-            } catch (SemanticError e) {
+            } catch (SemanticException e) {
                 System.err.println(e);
                 continue;
             }
-            // print result
             System.out.println(result);
         }
     }
-
 }
