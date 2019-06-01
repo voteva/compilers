@@ -1,18 +1,12 @@
-package anasy.whitespace;
+package whitespace;
 
-import anasy.operators.Operator;
-import anasy.parser.*;
+import exception.SyntaxException;
+import operators.Operator;
+import parser.*;
 
 import java.util.Stack;
 
 
-/**
- * Indenter helps to recognize indentation based programming languages.
- * It generates Newline, Indent, and Dedent tokens.
- *
- * @param <N>
- * @author jure
- */
 public class Indenter<N> extends Tokind<N> {
     public Tokind<N> tokNewline;
     public Tokind<N> tokIndent;
@@ -37,7 +31,7 @@ public class Indenter<N> extends Tokind<N> {
         return indents.size();
     }
 
-    void checkIndentation() throws SyntaxError {
+    void checkIndentation() throws SyntaxException {
         // count dedentations
         while (input.getCol() < indents.peek()) {
             indents.pop();
@@ -45,11 +39,11 @@ public class Indenter<N> extends Tokind<N> {
         }
         // check indentation level
         if (input.getCol() != indents.peek())
-            throw new SyntaxError("invalid indentation level", input.getLoc());
+            throw new SyntaxException("invalid indentation level", input.getLoc());
     }
 
     @Override
-    public Token<N> lex() throws SyntaxError {
+    public Token<N> lex() throws SyntaxException {
         // generate any Dedent
         if (dedentCount > 0) {
             dedentCount--;

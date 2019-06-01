@@ -1,4 +1,6 @@
-package anasy.demos.kalq2;
+package demo;
+
+import exception.SemanticException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,7 +11,7 @@ public class Engine {
     Context context;
 
     public Engine() {
-        symbols = new HashMap<String, Sym>();
+        symbols = new HashMap<>();
         context = new Context(null);
     }
 
@@ -33,35 +35,25 @@ public class Engine {
         return sym;
     }
 
-    public Node makeBool(String val) {
-        if (symbols.containsKey(val))
-            return symbols.get(val);
-        Sym sym = new Sym(val);
-        symbols.put(val, sym);
-        return sym;
-    }
-
     public void push() {
         this.context = new Context(this.context);
     }
-
-    // ***** Symbols *****
 
     public void pop() {
         this.context = this.context.parent;
     }
 
     public class Node {
-        public Node eval() throws SemanticError {
+        public Node eval() throws SemanticException {
             return this;
         }
 
-        public Node doUnaryOp(String op) throws SemanticError {
-            throw new SemanticError(String.format("Operation '%s' not implemented.", op));
+        public Node doUnaryOp(String op) throws SemanticException {
+            throw new SemanticException(String.format("Operation '%s' not implemented.", op));
         }
 
-        public Node doBinOp(String op, Node other) throws SemanticError {
-            throw new SemanticError(String.format("Operation '%s' not implemented.", op));
+        public Node doBinOp(String op, Node other) throws SemanticException {
+            throw new SemanticException(String.format("Operation '%s' not implemented.", op));
         }
 
         public boolean isTrue() {
@@ -83,13 +75,13 @@ public class Engine {
         }
 
         @Override
-        public Node doUnaryOp(String op) throws SemanticError {
+        public Node doUnaryOp(String op) throws SemanticException {
             if ("!".equals(op)) return new Bool(!this.val);
             return super.doUnaryOp(op);
         }
 
         @Override
-        public Node doBinOp(String op, Node other) throws SemanticError {
+        public Node doBinOp(String op, Node other) throws SemanticException {
             Bool that = (Bool) other;
             if ("&".equals(op)) {
                 return new Bool(val && that.val);
@@ -122,7 +114,7 @@ public class Engine {
         }
 
         @Override
-        public Node eval() throws SemanticError {
+        public Node eval() throws SemanticException {
             return operand.eval().doUnaryOp(op);
         }
     }
@@ -145,7 +137,7 @@ public class Engine {
         }
 
         @Override
-        public Node eval() throws SemanticError {
+        public Node eval() throws SemanticException {
             Node l = ("=".equals(op)) ? left : left.eval();
             Node r = right.eval();
             return l.doBinOp(op, r);
@@ -166,7 +158,7 @@ public class Engine {
         }
 
         @Override
-        public Node eval() throws SemanticError {
+        public Node eval() throws SemanticException {
             if (this.val.equals("true")) {
                 return new Bool(true);
             }
@@ -177,21 +169,19 @@ public class Engine {
 
             Node val = context.get(this);
             if (val == null) {
-                throw new SemanticError(String.format("Undefined variable '%s'", this));
+                throw new SemanticException(String.format("Undefined variable '%s'", this));
             }
 
             return val;
         }
 
         @Override
-        public Node doBinOp(String op, Node other) throws SemanticError {
+        public Node doBinOp(String op, Node other) throws SemanticException {
             if ("=".equals(op))
                 return context.set(this, other);
             return super.doBinOp(op, other);
         }
     }
-
-    // Context
 
     public class Context {
         Context parent;
@@ -199,7 +189,7 @@ public class Engine {
 
         public Context(Context parent) {
             this.parent = parent;
-            this.vars = new HashMap<Sym, Node>();
+            this.vars = new HashMap<>();
         }
 
         public Node get(Sym sym) {
@@ -231,13 +221,11 @@ public class Engine {
         }
 
         @Override
-        public Node eval() throws SemanticError {
+        public Node eval() throws SemanticException {
             Node node = context.get(this.head);
-            if (!(node instanceof Func))
-                throw new SemanticError(String.format("'%s' is not a function.", this.head));
             Func func = (Func) node;
             if (func.args.length != this.args.length)
-                throw new SemanticError("Argument mismatch.");
+                throw new SemanticException("Argument mismatch.");
             Context newctx = new Context(context);
             for (int i = 0; i < func.args.length; i++)
                 newctx.set(((Sym) func.args[i]), args[i].eval());
@@ -252,8 +240,6 @@ public class Engine {
         }
     }
 
-    // **** Constructor *****
-
     public class Func extends Node {
         protected Sym head;
         protected Node[] args;
@@ -266,7 +252,7 @@ public class Engine {
         }
 
         @Override
-        public Node eval() throws SemanticError {
+        public Node eval() throws SemanticException {
             return context.set(head, this);
         }
 

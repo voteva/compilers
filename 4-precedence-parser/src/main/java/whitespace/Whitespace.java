@@ -1,25 +1,18 @@
-package anasy.whitespace;
+package whitespace;
 
-import anasy.parser.Parser;
-import anasy.parser.SyntaxError;
-import anasy.parser.Token;
-import anasy.parser.Tokind;
+import parser.Parser;
+import exception.SyntaxException;
+import parser.Token;
+import parser.Tokind;
 
-/**
- * Whitespace skipper. " \t\n". See Character.isWhitespace().
- *
- * @param <N>
- * @author jure
- */
 public class Whitespace<N> extends Tokind<N> {
 
     public Whitespace(Parser<N> parser) {
         super(parser, "<whitespace>", 0);
     }
 
-    public Token<N> lex() throws SyntaxError {
+    public Token<N> lex() throws SyntaxException {
         while (Character.isWhitespace(input.peek())) input.advance();
         return null;
     }
-
 }

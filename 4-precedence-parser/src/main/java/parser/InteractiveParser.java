@@ -1,4 +1,6 @@
-package anasy.parser;
+package parser;
+
+import exception.SyntaxException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,7 +15,7 @@ public abstract class InteractiveParser<N> extends Parser<N> {
     private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
     @Override
-    public boolean begin(String input) throws SyntaxError {
+    public boolean begin(String input) throws SyntaxException {
         if (input == null) input = readLine(0);
         queryState = 0;
         return super.begin(input);
@@ -28,12 +30,12 @@ public abstract class InteractiveParser<N> extends Parser<N> {
     protected abstract boolean canRefeed(int stage);
 
     @Override
-    public Token<N> peek() throws SyntaxError {
+    public Token<N> peek() throws SyntaxException {
         if (canRefeed(0)) refeed();
         return super.peek();
     }
 
-    public Token<N> advance() throws SyntaxError {
+    public Token<N> advance() throws SyntaxException {
         Token<N> tok = super.advance();
         if (canRefeed(1)) refeed();
         return tok;
@@ -55,7 +57,7 @@ public abstract class InteractiveParser<N> extends Parser<N> {
         }
     }
 
-    public boolean refeed() throws SyntaxError {
+    public boolean refeed() throws SyntaxException {
         while (curr == null) {
             String line = readLine(1);
             if (line == null) return false;

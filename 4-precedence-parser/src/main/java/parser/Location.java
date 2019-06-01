@@ -1,10 +1,5 @@
-package anasy.parser;
+package parser;
 
-/**
- * Location in the input buffer. Includes row and column as well as position (offset from the beginning of code)
- *
- * @author jure
- */
 public class Location {
 
     public final int pos;

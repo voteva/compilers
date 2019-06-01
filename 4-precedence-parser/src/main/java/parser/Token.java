@@ -1,11 +1,7 @@
-package anasy.parser;
+package parser;
 
-/**
- * Representation of token. Every token is represented by kind, location and (possible) value.
- *
- * @param <N> class for nodes of an abstract syntax tree
- * @author jure
- */
+import exception.SyntaxException;
+
 public class Token<N> {
     protected final Tokind<N> kind;
     protected final Location loc;
@@ -47,32 +43,18 @@ public class Token<N> {
         return loc;
     }
 
-    /**
-     * Parsing procedure on beginning. See Pratt's algorithm.
-     *
-     * @return
-     * @throws SyntaxError
-     */
-    protected N parse() throws SyntaxError {
+    protected N parse() throws SyntaxException {
         // check if already parsed (has value)
         N node = kind.parse(this);
         if (node == null)
-            throw new SyntaxError(String.format("unexpected token '%s'", this), loc);
+            throw new SyntaxException(String.format("unexpected token '%s'", this), loc);
         return node;
     }
 
-    /**
-     * Parsing procedure on continuation. See Pratt's algorithm.
-     *
-     * @param left
-     * @return
-     * @throws SyntaxError
-     */
-    protected N parse(N left) throws SyntaxError {
+    protected N parse(N left) throws SyntaxException {
         N node = kind.parse(this, left);
         if (node == null)
-            throw new SyntaxError(String.format("unexpected token '%s'", this), loc);
+            throw new SyntaxException(String.format("unexpected token '%s'", this), loc);
         return node;
     }
-
 }

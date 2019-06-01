@@ -1,16 +1,9 @@
-package anasy.operators;
+package operators;
 
-import anasy.parser.Parser;
-import anasy.parser.SyntaxError;
-import anasy.parser.Token;
+import parser.Parser;
+import exception.SyntaxException;
+import parser.Token;
 
-
-/**
- * Prefix operators.
- *
- * @param <N>
- * @author jure
- */
 public abstract class Prefix<N> extends Operator<N> {
 
     private int pbp;    // prefix bounding precedence
@@ -23,7 +16,7 @@ public abstract class Prefix<N> extends Operator<N> {
     public abstract N makePrefixNode(N operand);
 
     @Override
-    public N parse(Token<N> token) throws SyntaxError {
+    public N parse(Token<N> token) throws SyntaxException {
         return makePrefixNode(parser.expression(pbp));
     }
 

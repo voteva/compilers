@@ -1,16 +1,9 @@
-package anasy.operators;
+package operators;
 
-import anasy.parser.Parser;
-import anasy.parser.SyntaxError;
-import anasy.parser.Token;
+import parser.Parser;
+import exception.SyntaxException;
+import parser.Token;
 
-
-/**
- * Infix operators.
- *
- * @param <N>
- * @author jure
- */
 public abstract class Infix<N> extends Operator<N> {
 
     private boolean rightAssoc;
@@ -27,7 +20,7 @@ public abstract class Infix<N> extends Operator<N> {
     public abstract N makeInfixNode(N left, N right);
 
     @Override
-    public N parse(Token<N> token, N left) throws SyntaxError {
+    public N parse(Token<N> token, N left) throws SyntaxException {
         N right = parser.expression(rightAssoc ? lbp - 1 : lbp);
         return makeInfixNode(left, right);
     }
