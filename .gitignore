@@ -34,3 +34,8 @@ infra/Dockerfile.made
 
 files/
 old/
+*.class
+
+/compiler/output
+/compiler/syntaxtree
+/compiler/visitor
